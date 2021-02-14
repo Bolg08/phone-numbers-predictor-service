@@ -1,20 +1,22 @@
-package com.predictor;
+package mavenpackage;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.HttpURLConnection;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.Headers;
 
-public class HttpCodeHandler implements HttpHandler {
-	private ILogger logger;
+public class HandleResult implements HttpHandler {
+
 	private String resourceUrl;
 	private CodesMatcher matcher;
 	
-	public HttpCodeHandler(String resourceUrl,CodesMatcher matcher, ILogger logger) {
-		this.logger = logger;
+	public HandleResult(String resourceUrl,CodesMatcher matcher) {
+	
 		this.resourceUrl = resourceUrl;
 		this.matcher = matcher;
 	}
@@ -22,13 +24,13 @@ public class HttpCodeHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange exchange) throws IOException {
 		Map<String,String> requestParams = null;
-		var method = exchange.getRequestMethod();
-		if (method.equals("GET")) {
-			logger.log("handle request");
+		var requestMethod = exchange.getRequestMethod();
+		if (requestMethod.equalsIgnoreCase("GET")) {
+			LogObject.info("HttpCodeHandler", "handle", "handle request");
 			requestParams = handleGetRequest(exchange);
 		}
 		//...
-		var prepare = prepareResponse(requestParams);
+		var prepare = prepareResponse(requestParams);	
 		handleResponse(exchange, prepare);
 	}
 	private String prepareResponse(Map<String,String> params) {
@@ -36,31 +38,34 @@ public class HttpCodeHandler implements HttpHandler {
 			var value = params.get("country");
 			return JsonUtils.toJsonString(matcher.getSuitableCodes(value));
 		}
-		logger.log("query parameter is not correct");
+		
+		LogObject.info("HttpCodeHandler", "prepareResponse", "query parameter is not correct");
 		return null;
 	}
 	private Map<String,String> handleGetRequest(HttpExchange httpExchange) {
 		var requestUri = httpExchange.getRequestURI();
 		if (!requestUri.toString().contains(resourceUrl)) {
-			logger.log(requestUri + "not served by this handler");
+		
+			LogObject.info("HttpCodeHandler", "handleGetRequest", requestUri + "not served by this handler");
 			return null;}	
 		var params = queryToMap(requestUri.getQuery());
 		return params;
 
 	}
 
-	
-
-	private void handleResponse(HttpExchange httpExchange, String prepare) throws IOException {
+	private void handleResponse(HttpExchange exchange, String prepare) throws IOException {
 		if(prepare==null) {
-			httpExchange.sendResponseHeaders(400, 0);
+			exchange.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
 		}
-		logger.log("send resonse");
-		OutputStream outputStream = httpExchange.getResponseBody();
+		
+		LogObject.info("HttpCodeHandler", "handleResponse", "send resonse");
+		Headers responseHeaders = exchange.getResponseHeaders();
+		responseHeaders.set("Content-Type", "application/json");
+	
+		OutputStream outputStream = exchange.getResponseBody();
 		String htmlResponse = prepare;
 	
-		//httpExchange.getResponseHeaders().set("Content-Type", "appication/json");
-		httpExchange.sendResponseHeaders(200, htmlResponse.length());
+		exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, htmlResponse.length());
 		outputStream.write(htmlResponse.getBytes());
 		outputStream.flush();
 		outputStream.close();

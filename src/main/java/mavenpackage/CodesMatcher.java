@@ -1,20 +1,19 @@
-package com.predictor;
+package mavenpackage;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+
 
 public class CodesMatcher {
 
-	private ILogger logger;
 	private DataCache dataCache;
 
-	public CodesMatcher(DataCache dataCache, ILogger logger)
+	public CodesMatcher(DataCache dataCache)
 			throws NullPointerException {
 
-		this.logger = logger;
 		if (dataCache == null ) {
-			logger.log("maps is null");
+		
+			LogObject.info("CodesMatcher", "CodesMatcher", "maps is null");
 			throw new NullPointerException();
 		}
 		this.dataCache = dataCache;
@@ -22,7 +21,7 @@ public class CodesMatcher {
 
 		public List<PhoneInfo> getSuitableCodes(String namePart) {
 		try {
-			var  namePartStd = namePart.toUpperCase();
+			var namePartStd = namePart.toUpperCase();
 			List<PhoneInfo> countries = dataCache.getNamesMap()
 					.entrySet()
 					.stream()
@@ -31,7 +30,8 @@ public class CodesMatcher {
 					.collect(Collectors.toList());
 			return countries;
 		} catch (Exception ex) {
-			logger.log(ex.getMessage());
+		
+			LogObject.info("CodesMatcher", "getSuitableCodes", ex.getMessage());
 			return null;
 		}
 

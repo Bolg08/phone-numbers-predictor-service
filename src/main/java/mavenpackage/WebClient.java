@@ -1,13 +1,13 @@
-package com.predictor;
+package mavenpackage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class WebClient {
-	private ILogger logger;
-    public WebClient( ILogger logger){
-        this.logger = logger;
+
+    public WebClient(){
+       
     }
     public String get(String resourceAddress){
         StringBuilder result = new StringBuilder();
@@ -22,8 +22,9 @@ public class WebClient {
             }
             return result.toString();
         } catch (Exception e) {
-        	logger.log(e.getMessage());
-        	 return null;
+        	
+            LogObject.warn("WebClient", "get", e.getMessage());
+        	return null;
         }
        
     }

@@ -1,4 +1,4 @@
-package com.predictor;
+package mavenpackage;
 
 public class PhoneInfo {
 	private String name;
