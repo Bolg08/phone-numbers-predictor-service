@@ -1,4 +1,4 @@
-package mavenpackage;
+package com.example.demo;
 
 import java.lang.reflect.Type;
 import java.util.List;

@@ -1,4 +1,4 @@
-package mavenpackage;
+package com.example.demo;
 
 import java.util.List;
 import java.util.stream.Collectors;

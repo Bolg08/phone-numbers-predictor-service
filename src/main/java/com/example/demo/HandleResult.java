@@ -1,4 +1,4 @@
-package mavenpackage;
+package com.example.demo;
 
 import java.io.IOException;
 import java.io.OutputStream;

@@ -1,4 +1,5 @@
-package mavenpackage;
+package com.example.demo;
+
 
 public class DataCacheRefresher implements Runnable {
 

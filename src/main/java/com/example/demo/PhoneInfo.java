@@ -1,4 +1,4 @@
-package mavenpackage;
+package com.example.demo;
 
 public class PhoneInfo {
 	private String name;

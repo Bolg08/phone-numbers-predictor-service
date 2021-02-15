@@ -1,6 +1,4 @@
-package mavenpackage;
-
-import static org.junit.jupiter.api.Assertions.*;
+package com.example.demo;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -18,7 +16,7 @@ class TestCodesMatcher {
 		var gson = new Gson();
 		var dataCache = new DataCache();
 		Type type = new TypeToken<Map<String, String>>(){}.getType(); 
-		var namesMap = gson.fromJson(namesSrc, type);
+	
 		dataCache.setNamesMap(gson.fromJson(namesSrc, type));
 		dataCache.setPhonesMap(gson.fromJson(codesSrc, type));
 		codesMatcher= new CodesMatcher(dataCache);
